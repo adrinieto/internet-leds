@@ -20,12 +20,12 @@ leds = [
 ]
 
 
-@app.route('/leds')
+@app.route('/api/leds')
 def get_leds():
     return jsonify({'leds': leds})
 
 
-@app.route('/leds/<int:led_id>')
+@app.route('/api/leds/<int:led_id>')
 def get_led(led_id):
     led = [led for led in leds if led['id'] == led_id]
     if len(led) == 0:
@@ -33,7 +33,7 @@ def get_led(led_id):
     return jsonify({'led': led[0]})
 
 
-@app.route('/leds/<int:led_id>', methods=['PUT'])
+@app.route('/api/leds/<int:led_id>', methods=['PUT'])
 def set_led_state(led_id):
     led = [led for led in leds if led['id'] == led_id]
     if len(led) == 0 or not request.json:
