@@ -1,0 +1,29 @@
+<html>
+<header>
+    <title>Internet Leds</title>
+    <script src="static/manage_leds.js"></script>
+</header>
+<body>
+
+<h3>Led list</h3>
+{% for led in leds %}
+    <p>Led {{ led.id }} state is {{ "ON" if led.state else "OFF" }}
+        {% if led.state %}
+            <button class="power_off" id="{{ led.id }}">Power Off</button>
+        {% else %}
+            <button class="power_on" id="{{ led.id }}">Power On</button>
+        {% endif %}
+    </p>
+{% endfor %}
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="application/javascript">
+    $("button[class^=power_on]").click(function () {
+        change_led_state($(this).attr("id"), true)
+    });
+    $("button[class^=power_off]").click(function () {
+        change_led_state($(this).attr("id"), false)
+    });
+</script>
+</body>
+</html>

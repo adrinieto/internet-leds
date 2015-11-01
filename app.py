@@ -1,5 +1,5 @@
 from arduino import Arduino
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, render_template
 
 app = Flask(__name__)
 arduino = Arduino()
@@ -18,6 +18,12 @@ leds = [
         'state': False
     }
 ]
+
+
+@app.route('/')
+def index():
+    return render_template('index.html',
+                           leds=leds)
 
 
 @app.route('/api/leds')
@@ -40,7 +46,6 @@ def set_led_state(led_id):
         abort(404)
     if 'state' not in request.json or type(request.json['state']) is not bool:
         abort(400)
-
     arduino.write_led_state(led_id, request.json['state'])
     led[0]['state'] = request.json['state']
     return jsonify(led[0])
@@ -53,4 +58,4 @@ def not_found(error):
 
 if __name__ == '__main__':
     # app.run(debug=True)
-    app.run(debug=False, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
