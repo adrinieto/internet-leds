@@ -1,28 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <header>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Internet Leds</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <!-- Button toggle -->
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="static/manage_leds.js"></script>
 </header>
 <body>
+<div class="container theme-showcase" role="main">
+    <div class="jumbotron">
+        <h1>Leds anywhere</h1>
 
-<h3>Led list</h3>
-{% for led in leds %}
-    <p>Led {{ led.id }} state is {{ "ON" if led.state else "OFF" }}
-        {% if led.state %}
-            <button class="power_off" id="{{ led.id }}">Power Off</button>
-        {% else %}
-            <button class="power_on" id="{{ led.id }}">Power On</button>
-        {% endif %}
-    </p>
-{% endfor %}
+        <p>Power on and off leds anywhere at anytime</p>
+    </div>
+    <div class="row col-md-6 col-md-offset-3">
+        <h2>Led list</h2>
+        {% for led in leds %}
+            <p><span class="col-md-6">Led {{ led.id }}</span>
 
+                <input  {{ "checked" if led.state }}
+                        id="{{ led.id }}"
+                        class="led_toggle col-md-6"
+                        data-toggle="toggle" type="checkbox">
+            </p>
+        {% endfor %}
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+        crossorigin="anonymous"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 <script type="application/javascript">
-    $("button[class^=power_on]").click(function () {
-        change_led_state($(this).attr("id"), true)
-    });
-    $("button[class^=power_off]").click(function () {
-        change_led_state($(this).attr("id"), false)
+    $(".led_toggle").change(function () {
+        var state = $(this).prop('checked');
+        change_led_state($(this).attr("id"), state)
     });
 </script>
 </body>
