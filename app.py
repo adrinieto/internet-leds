@@ -4,36 +4,20 @@ from flask import Flask, jsonify, request, abort, make_response, render_template
 app = Flask(__name__)
 arduino = Arduino()
 
-leds = [
-    {
-        'id': 0,
-        'state': False
-    },
-    {
-        'id': 1,
-        'state': False
-    },
-    {
-        'id': 2,
-        'state': False
-    }
-]
-
 
 @app.route('/')
 def index():
-    return render_template('index.html',
-                           leds=leds)
+    return render_template('index.html', leds=arduino.leds)
 
 
 @app.route('/api/leds')
 def get_leds():
-    return jsonify({'leds': leds})
+    return jsonify({'leds': arduino.leds})
 
 
 @app.route('/api/leds/<int:led_id>')
 def get_led(led_id):
-    led = [led for led in leds if led['id'] == led_id]
+    led = [led for led in arduino.leds if led['id'] == led_id]
     if len(led) == 0:
         abort(404)
     return jsonify({'led': led[0]})
@@ -41,7 +25,7 @@ def get_led(led_id):
 
 @app.route('/api/leds/<int:led_id>', methods=['PUT'])
 def set_led_state(led_id):
-    led = [led for led in leds if led['id'] == led_id]
+    led = [led for led in arduino.leds if led['id'] == led_id]
     if len(led) == 0 or not request.json:
         abort(404)
     if 'state' not in request.json or type(request.json['state']) is not bool:
@@ -58,4 +42,4 @@ def not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # app.run(debug=False, host='0.0.0.0') # Allow access from Internet
+    # app.run(debug=False, host='0.0.0.0')  # Allow access from Internet
