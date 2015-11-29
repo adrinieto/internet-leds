@@ -2,7 +2,7 @@ from arduino import Arduino
 from flask import Flask, jsonify, request, abort, make_response, render_template
 
 app = Flask(__name__)
-arduino = Arduino()
+arduino = Arduino("COM4")
 
 
 @app.route('/')
@@ -18,7 +18,7 @@ def get_leds():
 @app.route('/api/leds/<int:led_id>')
 def get_led(led_id):
     led = [led for led in arduino.leds if led['id'] == led_id]
-    if len(led) == 0:
+    if not led:
         abort(404)
     return jsonify({'led': led[0]})
 
@@ -26,7 +26,7 @@ def get_led(led_id):
 @app.route('/api/leds/<int:led_id>', methods=['PUT'])
 def set_led_state(led_id):
     led = [led for led in arduino.leds if led['id'] == led_id]
-    if len(led) == 0 or not request.json:
+    if not led or not request.json:
         abort(404)
     if 'state' not in request.json or type(request.json['state']) is not bool:
         abort(400)
