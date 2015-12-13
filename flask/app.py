@@ -1,8 +1,36 @@
-from arduino import Arduino
+from datetime import datetime
+from pprint import pprint
 from flask import Flask, jsonify, request, abort, make_response, render_template
+from flask_socketio import SocketIO
+from arduino import Arduino
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
 arduino = Arduino("COM4")
+
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected!')
+    socketio.emit('led_state', {'leds': arduino.leds})
+
+
+@socketio.on('disconnect')
+def handle_connect():
+    print('Client disconnected!')
+
+
+@socketio.on('set_led_state')
+def handle_set_led_state(message):
+    arduino.set_led_state(message['id'], message['state'])
+    socketio.emit('led_state', {'leds': arduino.leds})
+
+    now = datetime.now()
+    msg = "[%s] %s changed led %s to %s" % (
+    now, request.remote_addr, message['id'], 'ON' if message['state'] else 'OFF')
+    socketio.emit('log', {'msg': msg})
 
 
 @app.route('/')
@@ -31,6 +59,7 @@ def set_led_state(led_id):
     if 'state' not in request.json or type(request.json['state']) is not bool:
         abort(400)
     arduino.set_led_state(led_id, request.json['state'])
+    socketio.emit('led_state', {'leds': arduino.leds})
     return jsonify(led[0])
 
 
@@ -40,5 +69,5 @@ def not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # app.run(debug=False, host='0.0.0.0')  # Allow access from Internet
+    socketio.run(app, debug=True)
+    # socketio.run(app, debug=False, host='0.0.0.0')  # Allow access from Internet
