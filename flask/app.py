@@ -30,8 +30,7 @@ def set_led_state(led_id):
         abort(404)
     if 'state' not in request.json or type(request.json['state']) is not bool:
         abort(400)
-    arduino.write_led_state(led_id, request.json['state'])
-    led[0]['state'] = request.json['state']
+    arduino.set_led_state(led_id, request.json['state'])
     return jsonify(led[0])
 
 

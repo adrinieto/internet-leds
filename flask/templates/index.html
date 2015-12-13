@@ -39,6 +39,8 @@
         crossorigin="anonymous"></script>
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 <script type="application/javascript">
+    $(".led_toggle").bootstrapToggle('off')
+    $(".led_toggle[checked]").bootstrapToggle('on')
     $(".led_toggle").change(function () {
         var state = $(this).prop('checked');
         change_led_state($(this).attr("id"), state)

@@ -7,7 +7,14 @@ function change_led_state(id, state) {
         data: JSON.stringify({state: state}),
         success: function (result) {
             if (state != result.state) {
-                $("#" + result.id).prop('checked', result.state).change();
+                // get the toggle instance for this checkbox
+                var toggle = $("#" + result.id).data('bs.toggle');
+                // change toggle state without calling the listener
+                if (result.state) {
+                    toggle.on(true);
+                } else {
+                    toggle.off(true);
+                }
             }
         }
     })

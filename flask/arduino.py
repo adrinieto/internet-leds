@@ -28,7 +28,7 @@ class Arduino:
         led_count = int(self.serial.readline())
         self._leds = [dict(id=i, state=False) for i in range(led_count)]
 
-    def write_led_state(self, led_id, state):
+    def set_led_state(self, led_id, state):
         if not self.serial:
             self.open_serial()
         state_string = "on" if state else "off"
@@ -44,11 +44,11 @@ if __name__ == "__main__":
     arduino = Arduino("COM4")
     print("{} leds".format(len(arduino.leds)))
     time.sleep(2)
-    arduino.write_led_state(0, True)
-    arduino.write_led_state(1, True)
+    arduino.set_led_state(0, True)
+    arduino.set_led_state(1, True)
     print(arduino.leds)
     time.sleep(0.5)
-    arduino.write_led_state(0, False)
+    arduino.set_led_state(0, False)
     time.sleep(0.5)
-    arduino.write_led_state(1, False)
+    arduino.set_led_state(1, False)
     print(arduino.leds)
